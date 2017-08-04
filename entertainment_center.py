@@ -2,6 +2,8 @@ import media
 import fresh_tomatoes
 
 # List of movies
+# Movie information from https://www.themoviedb.org
+# Trailers from Youtube
 scandal = media.Movie("SCANDAL Documentary film HELLO WORLD",
                       "https://image.tmdb.org/t/p/original/x3mFN0unqhlVO2NoHL5zm05DRZK.jpg",
                       "https://www.youtube.com/watch?v=uroSQHVX0ks",
