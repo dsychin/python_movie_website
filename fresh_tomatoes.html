@@ -1,10 +1,4 @@
-import webbrowser
-import os
-import re
 
-
-# Styles and scripting for the page
-main_page_head = '''
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,11 +83,7 @@ main_page_head = '''
         });
     </script>
 </head>
-'''
 
-
-# The main page layout and title bar
-main_page_content = '''
   <body>
     <!-- Trailer Video Modal -->
     <div class="modal" id="trailer">
@@ -119,57 +109,43 @@ main_page_content = '''
       </div>
     </div>
     <div class="container">
-      {movie_tiles}
+      
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="uroSQHVX0ks" data-toggle="modal" data-target="#trailer">
+    <img src="https://image.tmdb.org/t/p/original/x3mFN0unqhlVO2NoHL5zm05DRZK.jpg" width="220" height="342">
+    <h2>SCANDAL Documentary film HELLO WORLD</h2>
+    <p>The first documentary film of Japanese female rock band SCANDAL will receive a UK and European DVD release this February through JPU Records. The film captures the highly successful four-piece as they travel overseas on their first solo world tour.</p>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="sZu3sVK3JOE" data-toggle="modal" data-target="#trailer">
+    <img src="https://image.tmdb.org/t/p/w640/4RnmHtCLtbBHD9jagVlcSzJTWX6.jpg" width="220" height="342">
+    <h2>I Am A Hero</h2>
+    <p>Hideo Suzuki is a 35-year-old mangaka assistant, whose life seem to be stuck around his exhausting but low-paying job, unfulfilled dreams, strange hallucinations and unsatisfying relationships. He sees himself as a supporting character in his own life, has low self-esteem, resulting in frustration. One day, the world as Hideo knows it is shattered by the presence of a disease that turns people into homicidal maniacs, whose first instinct is to attack and devour the nearest human.</p>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="nANfoAIMWdc" data-toggle="modal" data-target="#trailer">
+    <img src="https://image.tmdb.org/t/p/w640/jC5Dp2U5IjmjVXO7GbTNn9G8j9J.jpg" width="220" height="342">
+    <h2>Chihayafuru</h2>
+    <p>When Chihaya Ayase was in the 6th grade of elementary school, she met Arata Wataya. Arata Wataya transferred from Fukui Prefecture. Taichi Mashima was Chihaya Ayase's friend since they were little. Arata got close to Chihaya and Taichi from the card game karuta. Four years later, Chihaya is a high school student. Chihaya learns that Arata, who went back to Fukui Prefecture, doesn't play karuta anymore. Believing they will meet Arata again, Chihaya and Taichi starts a karuta club at their high school.</p>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="xU47nhruN-Q" data-toggle="modal" data-target="#trailer">
+    <img src="https://image.tmdb.org/t/p/w640/xq1Ugd62d23K2knRUx6xxuALTZB.jpg" width="220" height="342">
+    <h2>Your Name.</h2>
+    <p>High schoolers Mitsuha and Taki are complete strangers living separate lives. But one night, they suddenly switch places. Mitsuha wakes up in Taki's body, and he in hers. This bizarre occurrence continues to happen randomly, and the two must adjust their lives around each other.</p>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="Ue4PCI0NamI" data-toggle="modal" data-target="#trailer">
+    <img src="https://image.tmdb.org/t/p/w640/5aGhaIHYuQbqlHWvWYqMCnj40y2.jpg" width="220" height="342">
+    <h2>The Martian</h2>
+    <p>During a manned mission to Mars, Astronaut Mark Watney is presumed dead after a fierce storm and left behind by his crew. But Watney has survived and finds himself stranded and alone on the hostile planet. With only meager supplies, he must draw upon his ingenuity, wit and spirit to subsist and find a way to signal to Earth that he is alive.</p>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="Df1xkYYbYrY" data-toggle="modal" data-target="#trailer">
+    <img src="https://image.tmdb.org/t/p/w640/lIv1QinFqz4dlp5U4lQ6HaiskOZ.jpg" width="220" height="342">
+    <h2>Whiplash</h2>
+    <p>Under the direction of a ruthless instructor, a talented young drummer begins to pursue perfection at any cost, even his humanity.</p>
+</div>
+
     </div>
   </body>
 </html>
-'''
-
-
-# A single movie entry html template
-movie_tile_content = '''
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="{trailer_youtube_id}" data-toggle="modal" data-target="#trailer">
-    <img src="{poster_image_url}" width="220" height="342">
-    <h2>{movie_title}</h2>
-    <p>{storyline}</p>
-</div>
-'''
-
-
-def create_movie_tiles_content(movies):
-    # The HTML content for this section of the page
-    content = ''
-    for movie in movies:
-        # Extract the youtube ID from the url
-        youtube_id_match = re.search(
-            r'(?<=v=)[^&#]+', movie.trailer_youtube_url)
-        youtube_id_match = youtube_id_match or re.search(
-            r'(?<=be/)[^&#]+', movie.trailer_youtube_url)
-        trailer_youtube_id = (youtube_id_match.group(0) if youtube_id_match
-                              else None)
-
-        # Append the tile for the movie with its content filled in
-        content += movie_tile_content.format(
-            movie_title=movie.title,
-            poster_image_url=movie.poster_image_url,
-            trailer_youtube_id=trailer_youtube_id,
-            storyline=movie.storyline
-        )
-    return content
-
-
-def open_movies_page(movies):
-    # Create or overwrite the output file
-    output_file = open('fresh_tomatoes.html', 'w')
-
-    # Replace the movie tiles placeholder generated content
-    rendered_content = main_page_content.format(
-        movie_tiles=create_movie_tiles_content(movies))
-
-    # Output the file
-    output_file.write(main_page_head + rendered_content)
-    output_file.close()
-
-    # open the output file in the browser (in a new tab, if possible)
-    url = os.path.abspath(output_file.name)
-    webbrowser.open('file://' + url, new=2)
